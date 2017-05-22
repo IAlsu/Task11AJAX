@@ -293,6 +293,9 @@
     <Content Include="Views\Person\_peopleListPartial.cshtml" />
     <Content Include="Views\Person\_createPartial.cshtml" />
     <Content Include="Views\Person\_personSinglePartial.cshtml" />
+    <Content Include="Views\Rewards\_createPartial.cshtml" />
+    <Content Include="Views\Rewards\_rewardsListPartial.cshtml" />
+    <Content Include="Views\Rewards\_rewardSinglePartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

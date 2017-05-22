@@ -24,7 +24,10 @@ namespace Rewarding.Controllers
             var rewards = db.Rewards.Include(i => i.Image)
                         .Where(x => name != null ? x.Title.Contains(name) : true).Select(y => y)
                         .ToList();
-
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_rewardsListPartial", rewards);
+            }
             return View(rewards);
         }
 
@@ -84,7 +87,11 @@ namespace Rewarding.Controllers
                     db.Rewards.Add(reward);
                     db.SaveChanges();
                 }
-                
+
+                if (Request.IsAjaxRequest())
+                {
+                    return PartialView("_rewardSinglePartial", reward);
+                }
                 return RedirectToAction("Index");
             }
 
@@ -167,7 +174,7 @@ namespace Rewarding.Controllers
         }
 
         // POST: Rewards/Delete/5
-        [Route("award/{id:int}/delete")]
+        //[Route("award/{id:int}/delete")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -182,8 +189,15 @@ namespace Rewarding.Controllers
             else
             {
                 db.Rewards.Remove(reward);
-                db.Pictures.Remove(image);
+                if (image!=null)
+                {
+                    db.Pictures.Remove(image);
+                }
                 db.SaveChanges();
+            }
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new { id });
             }
             return RedirectToAction("Index");
         }

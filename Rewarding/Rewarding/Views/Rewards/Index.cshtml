@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Rewarding.Models.Reward>
+﻿
+@using Rewarding.Models
+@using Microsoft.AspNet.Identity
+@model IEnumerable<Rewarding.Models.Reward>
 
 @{
     ViewBag.Title = "Index";
@@ -7,50 +10,38 @@
 
 <h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Image)
-        </th>
-        <th></th>
-    </tr>
+@Html.Partial("_createPartial", new Reward())
 
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @if (item.ImageId == null)
-                    {
-                    <div class="form-control-static">No image</div>
-                }
-                else
-                {
-                    <img class="img-thumbnail" width="150" height="150"
-                         src="@Url.Action("GetImage", "Images",
-                            new {imageId = item.ImageId })" />
-                }
-            </td>
+<div id="notesList">
+    @Html.Partial("_rewardsListPartial")
+</div>
+<a onclick="refresh()" class="btn btn-default">Refresh</a>
 
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
+<script type="text/javascript">
+    function refresh() {
+        $.ajax({
+            url: '@Url.Action("Index")',
+            method: "GET",
+            success: function (data) {
+                $('#notesList').html(data);
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function OnNoteRemove(data, status, request) {
+        if (data.error) {
+            OnError(request, status, data.error);
+            return;
+        }
+        var noteId = data.id;
+        $('tr[data-note-id = ' + noteId + ']').remove();
     }
 
-</table>
+    function OnError(request, status, error) {
+        alert(error);
+    }
+</script>
+
+
